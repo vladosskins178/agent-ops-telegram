@@ -1,0 +1,11 @@
+{
+  "name": "agent-ops-telegram",
+  "owner": { "name": "Vladislav Y", "url": "https://github.com/vladosskins178" },
+  "plugins": [
+    {
+      "name": "agent-ops-telegram",
+      "source": "./",
+      "description": "Run a coding agent 24/7 in tmux and talk to it from Telegram without losing messages."
+    }
+  ]
+}

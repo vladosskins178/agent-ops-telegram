@@ -1,0 +1,27 @@
+# Example: two agents on one server, each with its own bot and tmux session.
+# Copy to ~/.config/agent-ops-telegram/config.toml and `chmod 600` it.
+# Tokens go in the env file (also mode 600), e.g.:
+#   AOT_TOKEN_GAME=123456789:AA...
+#   AOT_TOKEN_SITE=987654321:AA...
+
+[defaults]
+env_file = "~/.config/agent-ops-telegram/secrets.env"
+state_dir = "~/.local/state/agent-ops-telegram"
+systemd = "user"
+
+[bots.game]
+token_env = "AOT_TOKEN_GAME"
+allowed_chats = [123456789]
+tmux_target = "game"
+start_command = "while true; do claude --continue; sleep 5; done"
+workdir = "~/game"
+
+[bots.site]
+token_env = "AOT_TOKEN_SITE"
+allowed_chats = [123456789, -1001234567890]
+allowed_users = [123456789]
+tmux_target = "site"
+start_command = "codex"
+workdir = "~/site"
+submit_retries = 2
+ack_reaction = ""

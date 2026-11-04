@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Lint and tests (Python ${{ matrix.python }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python: ["3.10", "3.11", "3.12", "3.13"]
+        include:
+          - os: macos-latest
+            python: "3.12"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: pip install -e ".[dev]"
+      - run: ruff check .
+      - run: ruff format --check .
+      - run: mypy src tests
+      - name: Unit tests (fake Telegram, fake tmux)
+        run: pytest -m "not tmux"
+
+  tmux:
+    name: Integration with real tmux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: sudo apt-get update && sudo apt-get install -y tmux
+      - run: pip install -e ".[dev]"
+      - run: pytest -m tmux -v
+      - name: Build the wheel and smoke-test it in a clean venv
+        run: |
+          pip install build
+          python -m build --outdir dist
+          python -m venv /tmp/wheel-venv
+          /tmp/wheel-venv/bin/pip install dist/*.whl
+          cd /tmp
+          /tmp/wheel-venv/bin/aot --version
+          /tmp/wheel-venv/bin/aot skill print | grep -q "aot send"
+          /tmp/wheel-venv/bin/aot instructions --bot demo | grep -q "aot send --bot demo"

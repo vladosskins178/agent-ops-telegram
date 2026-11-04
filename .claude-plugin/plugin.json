@@ -1,0 +1,10 @@
+{
+  "name": "agent-ops-telegram",
+  "version": "0.1.0",
+  "description": "Talk to your coding agent from Telegram: the agent learns the prompt format, how to reply, send screenshots and files with `aot send`, and how to diagnose the relay.",
+  "author": { "name": "Vladislav Y", "url": "https://github.com/vladosskins178" },
+  "homepage": "https://github.com/vladosskins178/agent-ops-telegram",
+  "repository": "https://github.com/vladosskins178/agent-ops-telegram",
+  "license": "MIT",
+  "keywords": ["telegram", "tmux", "remote", "notifications", "devops"]
+}
